@@ -1,0 +1,38 @@
+---
+import MotoCard from '@components/ui/MotoCard.astro';
+
+interface MotoData {
+  nombre: string;
+  precio: string;
+  cilindrada: string;
+  uso: 'Trabajo' | 'Ciudad' | 'Campo' | 'Carga';
+  foto: string;
+  mensaje_wa: string;
+}
+
+interface Props {
+  motos: MotoData[];
+}
+
+const { motos } = Astro.props;
+---
+
+<section id="motos" class="py-16 md:py-20 bg-white" aria-label="Motos destacadas">
+  <div class="max-w-5xl mx-auto px-5">
+    <h2 class="section-title">Motos Destacadas</h2>
+    <p class="section-subtitle">Consulta disponibilidad y precio final por WhatsApp</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+      {motos.map((moto) => (
+        <MotoCard
+          nombre={moto.nombre}
+          precio={moto.precio}
+          cilindrada={moto.cilindrada}
+          uso={moto.uso}
+          foto={moto.foto}
+          mensaje_wa={moto.mensaje_wa}
+        />
+      ))}
+    </div>
+  </div>
+</section>

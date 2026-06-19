@@ -1,0 +1,42 @@
+---
+---
+
+<dialog
+  id="popup-aviso"
+  class="fixed inset-0 z-[9999] p-0 bg-transparent max-w-none w-full h-full m-0 backdrop:bg-black/70"
+  aria-label="Aviso de entrada"
+>
+  <div class="flex items-center justify-center w-full h-full p-4">
+    <div class="relative max-w-sm w-full">
+      <!-- Imagen 1:1 -->
+      <img
+        src="/images/popup.png"
+        alt="Aviso Rashag Motos"
+        class="w-full aspect-square object-cover rounded-xl shadow-2xl"
+      />
+      <!-- Botón cerrar -->
+      <button
+        id="popup-close"
+        class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white text-gray-900 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors font-bold text-lg leading-none"
+        aria-label="Cerrar aviso"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('popup-aviso') as HTMLDialogElement;
+  const closeBtn = document.getElementById('popup-close');
+
+  if (dialog) {
+    dialog.showModal();
+
+    closeBtn?.addEventListener('click', () => dialog.close());
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  }
+</script>

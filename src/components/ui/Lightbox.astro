@@ -1,0 +1,95 @@
+---
+interface Props {
+  images: { foto: string; alt?: string }[];
+}
+
+const { images } = Astro.props;
+---
+
+<!-- Galería con lightbox nativo via <dialog> -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+  {images.map((img, i) => (
+    <button
+      onclick={`openLightbox(${i})`}
+      class="overflow-hidden rounded-xl aspect-[4/3] bg-gray-100 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      aria-label={`Ver imagen: ${img.alt ?? `Foto ${i + 1}`}`}
+    >
+      <img
+        src={img.foto}
+        alt={img.alt ?? `Foto del local ${i + 1}`}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+        decoding="async"
+      />
+    </button>
+  ))}
+</div>
+
+<!-- Dialog nativo para lightbox -->
+<dialog
+  id="lb-dialog"
+  class="lightbox"
+  onclick="if(event.target===this)this.close()"
+  aria-modal="true"
+  aria-label="Visor de imagen ampliada"
+>
+  <div class="relative flex items-center justify-center min-h-[200px]">
+    <!-- Botón cerrar -->
+    <button
+      onclick="document.getElementById('lb-dialog').close()"
+      class="absolute -top-10 right-0 text-white text-3xl leading-none hover:opacity-75 transition-opacity focus:outline-none"
+      aria-label="Cerrar imagen"
+    >
+      &times;
+    </button>
+
+    <!-- Flecha anterior -->
+    <button
+      id="lb-prev"
+      onclick="lbNav(-1)"
+      class="absolute left-0 md:-left-12 text-white text-3xl leading-none hover:opacity-75 transition-opacity focus:outline-none px-2 py-4"
+      aria-label="Imagen anterior"
+    >
+      &#8249;
+    </button>
+
+    <img id="lb-img" src="" alt="" class="max-h-[80vh] max-w-[90vw] md:max-w-3xl object-contain rounded-lg" />
+
+    <!-- Flecha siguiente -->
+    <button
+      id="lb-next"
+      onclick="lbNav(1)"
+      class="absolute right-0 md:-right-12 text-white text-3xl leading-none hover:opacity-75 transition-opacity focus:outline-none px-2 py-4"
+      aria-label="Imagen siguiente"
+    >
+      &#8250;
+    </button>
+  </div>
+</dialog>
+
+<script define:vars={{ images }}>
+  let currentIndex = 0;
+
+  window.openLightbox = function (index) {
+    currentIndex = index;
+    updateLightbox();
+    document.getElementById('lb-dialog').showModal();
+  };
+
+  window.lbNav = function (dir) {
+    currentIndex = (currentIndex + dir + images.length) % images.length;
+    updateLightbox();
+  };
+
+  function updateLightbox() {
+    const img = document.getElementById('lb-img');
+    img.src = images[currentIndex].foto;
+    img.alt = images[currentIndex].alt ?? `Foto ${currentIndex + 1}`;
+  }
+
+  // Cerrar con Escape (nativo en dialog, pero lo reforzamos)
+  document.getElementById('lb-dialog')?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+  });
+</script>

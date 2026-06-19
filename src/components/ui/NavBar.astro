@@ -1,0 +1,194 @@
+---
+import { site, waLink } from '@config/site';
+
+const navLinks = [
+  { label: 'Inicio', href: '#top' },
+  { label: 'Motos', href: '#motos' },
+  { label: 'Financiamiento', href: '#financiamiento' },
+  { label: 'Taller y Postventa', href: '#taller' },
+  { label: 'Canales Oficiales', href: '#contacto' },
+  { label: 'Galería', href: '#galeria' },
+];
+
+const waHref = waLink('Hola, me comunico desde su sitio web. Quisiera más información.');
+---
+
+<header
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
+>
+  <div class="max-w-6xl mx-auto px-4 md:px-6 flex items-center justify-between h-16 md:h-[68px]">
+
+    <!-- Logo -->
+    <a href="#top" class="flex items-center shrink-0" aria-label={`Inicio ${site.nombre}`}>
+      <img src={site.logo} alt={site.logo_alt} class="h-9 md:h-10 w-auto" />
+    </a>
+
+    <!-- Links desktop -->
+    <nav class="hidden md:flex items-center gap-1 lg:gap-2" aria-label="Navegación principal">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- CTA WhatsApp desktop -->
+    <a
+      href={waHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hidden md:inline-flex items-center gap-2 btn-wa text-sm px-4 py-2.5 shrink-0"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.389a.75.75 0 0 0 .906.981l5.747-1.507A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.677-.514-5.2-1.408l-.373-.22-3.865 1.013 1.032-3.76-.242-.387A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+      </svg>
+      WhatsApp
+    </a>
+
+    <!-- Hamburger button móvil -->
+    <button
+      id="menu-toggle"
+      class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded-md focus:outline-none"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="hamburger-line w-6 h-0.5 bg-current transition-all duration-300 origin-center"></span>
+      <span class="hamburger-line w-6 h-0.5 bg-current transition-all duration-300"></span>
+      <span class="hamburger-line w-6 h-0.5 bg-current transition-all duration-300 origin-center"></span>
+    </button>
+  </div>
+
+  <!-- Menú móvil -->
+  <div
+    id="mobile-menu"
+    class="md:hidden hidden border-t"
+    aria-label="Menú móvil"
+  >
+    <nav class="flex flex-col px-4 py-3 gap-0.5">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="mobile-nav-link px-3 py-3 rounded-md text-sm font-medium border-b border-gray-100 last:border-0"
+          onclick="closeMobileMenu()"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href={waHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-wa mt-3 w-full text-sm py-3 justify-center"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.389a.75.75 0 0 0 .906.981l5.747-1.507A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.677-.514-5.2-1.408l-.373-.22-3.865 1.013 1.032-3.76-.242-.387A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+        </svg>
+        Escribir por WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  /* Estado inicial: transparente sobre el hero */
+  #navbar {
+    color: white;
+  }
+  #navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  #navbar .nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  #navbar #menu-toggle {
+    color: white;
+  }
+
+  /* Estado scrolled: fondo rojo primario */
+  #navbar.nav-scrolled {
+    background: color-mix(in srgb, var(--color-primary) 55%, black);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+  #navbar.nav-scrolled .nav-link {
+    color: white;
+  }
+  #navbar.nav-scrolled .nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  #navbar.nav-scrolled #menu-toggle {
+    color: white;
+  }
+
+  /* Menú móvil: siempre fondo blanco */
+  #mobile-menu {
+    background: white;
+    border-color: #f3f4f6;
+  }
+  #mobile-menu .mobile-nav-link {
+    color: #374151;
+  }
+  #mobile-menu .mobile-nav-link:hover {
+    color: var(--color-primary);
+    background: #f9fafb;
+  }
+
+  /* Hamburger animado a X cuando está abierto */
+  #menu-toggle.open .hamburger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  #menu-toggle.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  #menu-toggle.open .hamburger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+</style>
+
+<script>
+  const navbar = document.getElementById('navbar')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+
+  // Scroll: alterna fondo sólido
+  function updateNavbar() {
+    if (window.scrollY > 60) {
+      navbar.classList.add('nav-scrolled');
+    } else {
+      navbar.classList.remove('nav-scrolled');
+    }
+  }
+  window.addEventListener('scroll', updateNavbar, { passive: true });
+  updateNavbar();
+
+  // Hamburger toggle
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.classList.toggle('open');
+    mobileMenu.classList.toggle('hidden', !isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Cerrar menú al hacer click en un link
+  (window as any).closeMobileMenu = function () {
+    toggle.classList.remove('open');
+    mobileMenu.classList.add('hidden');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  // Cerrar al hacer click fuera
+  document.addEventListener('click', (e) => {
+    if (!navbar.contains(e.target as Node)) {
+      (window as any).closeMobileMenu();
+    }
+  });
+</script>

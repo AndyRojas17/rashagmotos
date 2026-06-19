@@ -1,0 +1,73 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import HeroSection from '@components/sections/HeroSection.astro';
+import MarcasSection from '@components/sections/MarcasSection.astro';
+import MotosSection from '@components/sections/MotosSection.astro';
+import FinanciamientoSection from '@components/sections/FinanciamientoSection.astro';
+import TallerSection from '@components/sections/TallerSection.astro';
+import CanalesSection from '@components/sections/CanalesSection.astro';
+import ClientesSection from '@components/sections/ClientesSection.astro';
+import GaleriaSection from '@components/sections/GaleriaSection.astro';
+import FooterSection from '@components/sections/FooterSection.astro';
+
+// --- Singletons ---
+const localEntry = await getEntry('local', 'index');
+const financiamientoEntry = await getEntry('financiamiento', 'index');
+const local = localEntry!.data;
+const financiamiento = financiamientoEntry!.data;
+
+// --- Colecciones ordenadas ---
+const motosRaw = await getCollection('motos', ({ data }) => data.activa);
+const motos = motosRaw
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .map((m) => m.data);
+
+const marcasRaw = await getCollection('marcas');
+const marcas = marcasRaw
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .map((m) => m.data);
+
+const galeriaRaw = await getCollection('galeria');
+const galeria = galeriaRaw
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .map((g) => ({ foto: g.data.foto, alt: g.data.alt }));
+
+const clientesRaw = await getCollection('clientes');
+const clientes = clientesRaw
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .map((c) => ({ foto: c.data.foto, modelo_moto: c.data.modelo_moto, ciudad: c.data.ciudad }));
+---
+
+<Layout>
+  <!-- S1 · Hero -->
+  <HeroSection
+    heroImagen={local.hero_imagen}
+    lineaConfianza={local.hero_linea_confianza}
+    cobertura={local.hero_cobertura}
+  />
+
+  <!-- S2 · Clientes -->
+  <ClientesSection clientes={clientes} />
+
+  <!-- S3 · Marcas -->
+  <MarcasSection marcas={marcas} />
+
+  <!-- S3 · Motos destacadas -->
+  <MotosSection motos={motos} />
+
+  <!-- S4 · Financiamiento -->
+  <FinanciamientoSection desde={financiamiento.desde} notas={financiamiento.notas} />
+
+  <!-- S5 · Taller y postventa -->
+  <TallerSection tallerFoto={local.taller_foto} servicios={local.servicios} />
+
+  <!-- S6 · Canales oficiales -->
+  <CanalesSection direccion={local.direccion} horario={local.horario} />
+
+  <!-- S7 · Galería del local -->
+  <GaleriaSection fotos={galeria} />
+
+  <!-- S8 · Footer -->
+  <FooterSection direccion={local.direccion} horario={local.horario} />
+</Layout>

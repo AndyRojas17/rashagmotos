@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Sobreescribir con site.colors en Layout.astro via define:vars */
+    --color-primary: #e63b2e;
+    --color-secondary: #1a1a2e;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 68px;
+  }
+
+  body {
+    @apply font-sans text-gray-900 bg-gray-100;
+  }
+
+  img {
+    @apply max-w-full;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80;
+    background-color: var(--color-primary);
+  }
+
+  .btn-wa {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-white bg-[#25D366] transition-opacity hover:opacity-90 active:opacity-80;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold border-2 transition-colors;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-primary);
+    @apply text-white;
+  }
+
+  .section-title {
+    @apply text-2xl md:text-3xl font-bold text-center mb-2;
+    color: var(--color-secondary);
+  }
+
+  .section-subtitle {
+    @apply text-center text-gray-500 mb-10 text-sm md:text-base;
+  }
+
+  .badge-uso {
+    @apply inline-block text-xs font-semibold px-2 py-0.5 rounded-full;
+    background-color: color-mix(in srgb, var(--color-primary) 15%, white);
+    color: var(--color-primary);
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden;
+  }
+}
+
+/* Lightbox dialog nativo */
+dialog.lightbox {
+  @apply p-0 bg-transparent border-0 max-w-5xl w-full mx-auto;
+}
+
+dialog.lightbox::backdrop {
+  background: rgba(0, 0, 0, 0.92);
+}
+
+dialog.lightbox img {
+  @apply w-full h-auto max-h-[85vh] object-contain rounded-lg;
+}
