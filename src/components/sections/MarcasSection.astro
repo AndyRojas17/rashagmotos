@@ -4,6 +4,8 @@ interface Props {
 }
 
 const { marcas } = Astro.props;
+
+const items = [...marcas, ...marcas];
 ---
 
 <section id="marcas" class="py-14 md:py-16 bg-white border-y border-gray-100" aria-label="Marcas que representamos">
@@ -11,37 +13,58 @@ const { marcas } = Astro.props;
     <p class="text-xs font-semibold uppercase tracking-widest text-center mb-8" style="color: var(--color-primary)">
       Marcas que representamos
     </p>
+  </div>
 
-    <!-- Banda horizontal: scroll en móvil, flex centrado en desktop -->
-    <div class="flex items-center gap-0 overflow-x-auto md:overflow-visible md:justify-center scrollbar-hide">
-      {marcas.map((marca, i) => (
-        <>
-          <div class="flex flex-col items-center justify-center gap-3 px-8 md:px-10 py-2 shrink-0 group">
-            <img
-              src={marca.logo}
-              alt={`Logo ${marca.nombre}`}
-              class="h-6 md:h-8 w-auto object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-200 grayscale group-hover:grayscale-0"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+  <!-- Carrusel animado en mobile, flex centrado en desktop -->
+  <div class="hidden md:flex items-center gap-0 justify-center">
+    {marcas.map((marca, i) => (
+      <>
+        <div class="flex flex-col items-center justify-center gap-3 px-10 py-2 group">
+          <img
+            src={marca.logo}
+            alt={`Logo ${marca.nombre}`}
+            class="h-8 w-auto object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-200 grayscale group-hover:grayscale-0"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        {i < marcas.length - 1 && (
+          <div class="h-10 w-px bg-gray-200 shrink-0" aria-hidden="true" />
+        )}
+      </>
+    ))}
+  </div>
 
-          {/* Divisor vertical entre marcas, excepto después del último */}
-          {i < marcas.length - 1 && (
-            <div class="h-10 w-px bg-gray-200 shrink-0" aria-hidden="true" />
-          )}
-        </>
+  <!-- Mobile: carrusel animado -->
+  <div class="md:hidden overflow-hidden" style="mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);">
+    <div class="marcas-track flex items-center gap-0">
+      {items.map((marca) => (
+        <div class="flex items-center justify-center px-8 py-2 shrink-0">
+          <img
+            src={marca.logo}
+            alt={`Logo ${marca.nombre}`}
+            class="h-7 w-auto object-contain opacity-70 grayscale"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       ))}
     </div>
   </div>
 </section>
 
 <style>
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .marcas-track {
+    animation: slide-marcas 12s linear infinite;
+    width: max-content;
   }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+
+  .marcas-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes slide-marcas {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 </style>
