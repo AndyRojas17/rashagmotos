@@ -47,26 +47,26 @@ const clientes = clientesRaw
     cobertura={local.hero_cobertura}
   />
 
-  <!-- S2 · Clientes -->
-  <ClientesSection clientes={clientes} />
-
-  <!-- S3 · Marcas -->
-  <MarcasSection marcas={marcas} />
-
-  <!-- S3 · Motos destacadas -->
+  <!-- S2 · Motos destacadas -->
   <MotosSection motos={motos} />
 
-  <!-- S4 · Financiamiento -->
+  <!-- S3 · Financiamiento -->
   <FinanciamientoSection desde={financiamiento.desde} notas={financiamiento.notas} />
 
-  <!-- S5 · Taller y postventa -->
+  <!-- S4 · Taller y postventa -->
   <TallerSection tallerFoto={local.taller_foto} servicios={local.servicios} />
 
-  <!-- S6 · Canales oficiales -->
+  <!-- S5 · Canales oficiales -->
   <CanalesSection direccion={local.direccion} horario={local.horario} />
 
-  <!-- S7 · Galería del local -->
+  <!-- S6 · Galería del local -->
   <GaleriaSection fotos={galeria} />
+
+  <!-- S7 · Clientes -->
+  <ClientesSection clientes={clientes} />
+
+  <!-- S8 · Marcas -->
+  <MarcasSection marcas={marcas} />
 
   <!-- S8 · Footer -->
   <FooterSection direccion={local.direccion} horario={local.horario} />
