@@ -3,7 +3,6 @@ import { site } from '@config/site';
 import '../styles/global.css';
 import WhatsAppFloat from '@components/ui/WhatsAppFloat.astro';
 import NavBar from '@components/ui/NavBar.astro';
-import PopupAviso from '@components/ui/PopupAviso.astro';
 
 interface Props {
   title?: string;
@@ -59,6 +58,5 @@ const fullTitle = title === site.nombre ? title : `${title} — ${site.nombre}`;
     <NavBar />
     <slot />
     <WhatsAppFloat />
-    <PopupAviso />
   </body>
 </html>
