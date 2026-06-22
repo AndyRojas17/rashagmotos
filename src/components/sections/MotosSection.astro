@@ -22,7 +22,8 @@ const { motos } = Astro.props;
     <h2 class="section-title">Motos Destacadas</h2>
     <p class="section-subtitle">Consulta disponibilidad y precio final por WhatsApp</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+    <!-- Desktop: grid normal -->
+    <div class="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
       {motos.map((moto) => (
         <MotoCard
           nombre={moto.nombre}
@@ -34,5 +35,33 @@ const { motos } = Astro.props;
         />
       ))}
     </div>
+
+    <!-- Mobile: carrusel horizontal -->
+    <div class="sm:hidden overflow-x-auto scrollbar-hide -mx-5 px-5">
+      <div class="flex gap-4" style="width: max-content;">
+        {motos.map((moto) => (
+          <div style="width: 75vw; max-width: 300px; flex-shrink: 0;">
+            <MotoCard
+              nombre={moto.nombre}
+              precio={moto.precio}
+              cilindrada={moto.cilindrada}
+              uso={moto.uso}
+              foto={moto.foto}
+              mensaje_wa={moto.mensaje_wa}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>
