@@ -6,99 +6,52 @@ interface Props {
   notas: string[];
 }
 
-const { desde, notas } = Astro.props;
+const { } = Astro.props;
 
-const waHref = waLink('Hola, quisiera información sobre las opciones de financiamiento para una moto.');
-
-const puntos = [
-  { texto: 'Sin inicial' },
-  { texto: 'Cuotas cómodas' },
-  { texto: 'Aprobación rápida' },
-  { texto: 'Asesoría personalizada' },
-];
+const waHref = waLink('Hola, quisiera información sobre las opciones de crédito para una moto.');
 ---
 
-<section id="financiamiento" class="py-12 md:py-16 bg-white" aria-label="Financiamiento">
-  <div class="max-w-6xl mx-auto px-5">
+<section id="financiamiento" class="relative w-full min-h-[420px] md:min-h-[500px] flex items-center overflow-hidden" aria-label="Financiamiento">
 
-    <!-- Bloque integrado con bordes redondeados -->
-    <div class="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-[3fr_2fr] min-h-[600px] shadow-2xl">
+  <!-- Imagen de fondo -->
+  <img
+    src="/images/FINANCIAMIENTO.jpg"
+    alt="Crédito para tu moto en Rashag Motos"
+    class="absolute inset-0 w-full h-full object-cover"
+    loading="lazy"
+    decoding="async"
+  />
 
-      <!-- Columna izquierda: Fotografía (60%) -->
-      <div class="relative h-72 md:h-auto overflow-hidden">
-        <img
-          src="/images/FINANCIAMIENTO.jpg"
-          alt="Cliente recibiendo su moto financiada en Rashag Motos"
-          class="w-full h-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-        <!-- Overlay sutil solo a la derecha para fusionar con el panel -->
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#111827] hidden md:block opacity-60"></div>
-        <!-- Overlay inferior en móvil -->
-        <div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent md:hidden"></div>
+  <!-- Overlay oscuro -->
+  <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 100%);"></div>
 
-        <!-- Badge sobre la foto -->
-        <div class="absolute top-6 left-6">
-          <span class="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full text-white shadow-lg" style="background-color: var(--color-primary)">
-            Financiamiento disponible
-          </span>
-        </div>
-      </div>
+  <!-- Contenido -->
+  <div class="relative z-10 pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 py-16 md:py-20">
 
-      <!-- Columna derecha: Contenido (40%) -->
-      <div class="flex flex-col justify-center px-7 py-10 md:px-10 md:py-12" style="background-color: #111827;">
-        <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color: var(--color-primary)">
-          Tu moto, hoy
-        </p>
-        <h2 class="text-2xl md:text-3xl font-extrabold text-white leading-tight mb-3">
-          Financia tu Moto<br /> Sin Complicaciones
-        </h2>
-        <p class="text-gray-400 text-sm mb-7">Asesoría personalizada. Aprobación rápida. Sin trámites difíciles.</p>
+    <!-- Label -->
+    <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color: var(--color-primary)">
+      Crédito
+    </p>
 
-        <!-- Puntos clave -->
-        <ul class="grid grid-cols-2 gap-2.5 mb-7">
-          {puntos.map((p) => (
-            <li class="flex items-center gap-2 text-sm text-gray-200">
-              <svg class="w-4 h-4 shrink-0" style="color: var(--color-primary)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              {p.texto}
-            </li>
-          ))}
-        </ul>
+    <!-- Título -->
+    <h2 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white uppercase leading-tight mb-5 max-w-3xl">
+      Tenemos el crédito<br />que buscas para<br />tu moto
+    </h2>
 
-        <!-- Notas desde CMS -->
-        {notas.length > 0 && (
-          <ul class="flex flex-col gap-1.5 mb-7">
-            {notas.map((nota) => (
-              <li class="flex items-start gap-2 text-xs text-gray-500">
-                <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                {nota}
-              </li>
-            ))}
-          </ul>
-        )}
+    <!-- Subtítulo -->
+    <p class="text-gray-300 text-sm md:text-base mb-8 max-w-md">
+      Solicita tu crédito de forma rápida, segura y 100% online.
+    </p>
 
-        <!-- Cuota referencial -->
-        <div class="border-t border-white/10 pt-5 mb-7">
-          <p class="text-gray-500 text-xs mb-1">Cuotas referenciales desde</p>
-          <p class="text-3xl font-extrabold text-white">{desde}</p>
-          <p class="text-xs text-gray-600 mt-1">*Sujeto a evaluación crediticia y términos del banco.</p>
-        </div>
-
-        <!-- CTA -->
-        <a href={waHref} target="_blank" rel="noopener noreferrer" class="btn-wa inline-flex justify-center px-6 py-3.5 text-sm font-bold w-full">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-5 h-5 shrink-0">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.389a.75.75 0 0 0 .906.981l5.747-1.507A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.677-.514-5.2-1.408l-.373-.22-3.865 1.013 1.032-3.76-.242-.387A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
-          </svg>
-          Consultar cuotas por WhatsApp
-        </a>
-      </div>
-
-    </div>
+    <!-- CTA -->
+    <a
+      href={waHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-2 px-8 py-4 font-bold text-sm uppercase tracking-widest text-white border-2 border-white rounded-lg hover:bg-white hover:text-black transition-colors duration-200"
+    >
+      Solicitar Crédito
+    </a>
   </div>
+
 </section>
