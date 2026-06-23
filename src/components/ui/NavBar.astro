@@ -97,9 +97,11 @@ const waHref = waLink('Hola, me comunico desde su sitio web. Quisiera más infor
 </header>
 
 <style>
-  /* Estado inicial: transparente sobre el hero */
+  /* Estado inicial: fondo oscuro siempre visible */
   #navbar {
     color: white;
+    background: var(--color-secondary);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   }
   #navbar .nav-link {
     color: rgba(255, 255, 255, 0.85);
