@@ -53,17 +53,17 @@ const clientes = clientesRaw
   <!-- S3 · Financiamiento -->
   <FinanciamientoSection desde={financiamiento.desde} notas={financiamiento.notas} />
 
-  <!-- S4 · Taller y postventa -->
+  <!-- S4 · Clientes -->
+  <ClientesSection clientes={clientes} />
+
+  <!-- S5 · Taller y postventa -->
   <TallerSection tallerFoto={local.taller_foto} servicios={local.servicios} />
 
-  <!-- S5 · Canales oficiales -->
+  <!-- S6 · Canales oficiales -->
   <CanalesSection direccion={local.direccion} horario={local.horario} />
 
-  <!-- S6 · Galería del local -->
+  <!-- S7 · Galería del local -->
   <GaleriaSection fotos={galeria} />
-
-  <!-- S7 · Clientes -->
-  <ClientesSection clientes={clientes} />
 
   <!-- S8 · Marcas -->
   <MarcasSection marcas={marcas} />
