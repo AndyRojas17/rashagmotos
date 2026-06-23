@@ -5,20 +5,21 @@ interface Props {
 
 const { clientes } = Astro.props;
 
-// Duplicamos el array para el loop infinito visual
 const items = [...clientes, ...clientes];
 ---
 
-<section id="clientes" class="py-14 md:py-16 bg-white overflow-hidden" aria-label="Clientes que confían en nosotros">
-  <div class="max-w-6xl mx-auto px-5 mb-8 flex items-center justify-center gap-4">
-    <span class="text-gray-400 text-xl">‹</span>
+<section id="clientes" class="py-14 md:py-16 bg-white overflow-hidden" aria-label="Comunidad Rashag">
+
+  <!-- Encabezado con flechas navegables -->
+  <div class="max-w-6xl mx-auto px-5 mb-8 flex items-center justify-center gap-6">
+    <button id="btn-prev" aria-label="Anterior" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors text-2xl font-light leading-none">‹</button>
     <h2 class="text-lg md:text-xl font-bold text-gray-800 tracking-wide">Comunidad Rashag</h2>
-    <span class="text-gray-400 text-xl">›</span>
+    <button id="btn-next" aria-label="Siguiente" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors text-2xl font-light leading-none">›</button>
   </div>
 
-  <!-- Carrusel automático CSS puro -->
+  <!-- Carrusel -->
   <div class="carousel-track-wrapper">
-    <div class="carousel-track">
+    <div id="carousel-track" class="carousel-track">
       {items.map((c) => (
         <div class="carousel-card">
           <img
@@ -53,16 +54,18 @@ const items = [...clientes, ...clientes];
     gap: 16px;
     width: max-content;
     animation: slide 30s linear infinite;
+    transition: transform 0.4s ease;
   }
 
-  .carousel-track:hover {
+  .carousel-track:hover,
+  .carousel-track.paused {
     animation-play-state: paused;
   }
 
   .carousel-card {
     position: relative;
-    width: 240px;
-    height: 300px;
+    width: 260px;
+    height: 260px;
     border-radius: 12px;
     overflow: hidden;
     flex-shrink: 0;
@@ -95,3 +98,32 @@ const items = [...clientes, ...clientes];
     }
   }
 </style>
+
+<script>
+  const track = document.getElementById('carousel-track')!;
+  const btnPrev = document.getElementById('btn-prev')!;
+  const btnNext = document.getElementById('btn-next')!;
+  const cardWidth = 260 + 16; // ancho + gap
+
+  function pause() {
+    track.classList.add('paused');
+    clearTimeout((window as any)._carouselResume);
+    (window as any)._carouselResume = setTimeout(() => track.classList.remove('paused'), 3000);
+  }
+
+  btnNext.addEventListener('click', () => {
+    pause();
+    const current = new DOMMatrix(getComputedStyle(track).transform).m41;
+    track.style.animation = 'none';
+    track.style.transform = `translateX(${current - cardWidth}px)`;
+    setTimeout(() => { track.style.animation = ''; track.style.transform = ''; }, 400);
+  });
+
+  btnPrev.addEventListener('click', () => {
+    pause();
+    const current = new DOMMatrix(getComputedStyle(track).transform).m41;
+    track.style.animation = 'none';
+    track.style.transform = `translateX(${current + cardWidth}px)`;
+    setTimeout(() => { track.style.animation = ''; track.style.transform = ''; }, 400);
+  });
+</script>
