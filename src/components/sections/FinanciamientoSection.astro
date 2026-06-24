@@ -13,11 +13,19 @@ const waHref = waLink('Hola, quisiera información sobre las opciones de crédit
 
 <section id="financiamiento" class="relative w-full min-h-[360px] md:min-h-[500px] flex items-end md:items-center overflow-hidden" aria-label="Financiamiento">
 
-  <!-- Imagen de fondo -->
+  <!-- Imagen de fondo desktop -->
   <img
     src="/images/R1-CREDITO.jpg"
     alt="Crédito para tu moto en Rashag Motos"
-    class="absolute inset-0 w-full h-full object-cover"
+    class="absolute inset-0 w-full h-full object-cover hidden md:block"
+    loading="lazy"
+    decoding="async"
+  />
+  <!-- Imagen de fondo móvil (con texto incluido) -->
+  <img
+    src="/images/CREDITO MOTOS.jpg"
+    alt="Crédito para tu moto en Rashag Motos"
+    class="absolute inset-0 w-full h-full object-cover block md:hidden"
     loading="lazy"
     decoding="async"
   />
@@ -25,8 +33,8 @@ const waHref = waLink('Hola, quisiera información sobre las opciones de crédit
   <!-- Overlay oscuro -->
   <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 100%);"></div>
 
-  <!-- Contenido -->
-  <div class="relative z-10 pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 py-8 md:py-20">
+  <!-- Contenido (solo desktop) -->
+  <div class="relative z-10 hidden md:block pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 py-8 md:py-20">
 
     <!-- Label -->
     <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color: var(--color-primary)">
