@@ -33,6 +33,16 @@ const waHref = waLink('Hola, quisiera información sobre las opciones de crédit
   <!-- Overlay oscuro (solo desktop) -->
   <div class="absolute inset-0 hidden md:block" style="background: linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 100%);"></div>
 
+  <!-- Botón solo móvil -->
+  <a
+    href={waHref}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="md:hidden relative z-10 mb-8 ml-6 inline-flex items-center gap-2 px-6 py-3 font-bold text-sm uppercase tracking-widest text-white border-2 border-white rounded-lg"
+  >
+    Solicitar Crédito
+  </a>
+
   <!-- Contenido (solo desktop) -->
   <div class="relative z-10 hidden md:block pl-6 md:pl-10 lg:pl-16 pr-6 md:pr-10 py-8 md:py-20">
 
