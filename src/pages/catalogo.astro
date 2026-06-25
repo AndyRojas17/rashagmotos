@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { waLink } from '@config/site';
+
+const motosRaw = await getCollection('motos', ({ data }) => data.activa);
+const motos = motosRaw
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .map((m) => m.data);
+
+const categorias = ['Todas', ...Array.from(new Set(motos.map((m) => m.uso)))];
+---
+
+<Layout title="Catálogo de Motos" description="Explora todas las motos disponibles en Rashag Motos. Precios, modelos y financiamiento disponible.">
+
+  <!-- Header -->
+  <div class="pt-20 pb-8 px-6 md:px-10 lg:px-16" style="background-color: var(--color-secondary);">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase">Catálogo de Motos</h1>
+    <p class="text-gray-400 text-sm mt-1">Encuentra la moto perfecta para ti</p>
+  </div>
+
+  <!-- Filtros por categoría -->
+  <div class="bg-white border-b px-6 md:px-10 lg:px-16 py-3 flex gap-2 overflow-x-auto">
+    {categorias.map((cat) => (
+      <button
+        data-filter={cat}
+        class={`filter-btn whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors ${cat === 'Todas' ? 'active-filter' : 'border-gray-300 text-gray-600 hover:border-gray-500'}`}
+      >
+        {cat}
+      </button>
+    ))}
+  </div>
+
+  <!-- Grid de motos -->
+  <div class="bg-gray-50 min-h-screen py-10 px-6 md:px-10 lg:px-16">
+    <div id="motos-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+      {motos.map((moto) => {
+        const waHref = waLink(moto.mensaje_wa);
+        return (
+          <div class="moto-card bg-white rounded-xl shadow-sm overflow-hidden flex flex-col" data-categoria={moto.uso}>
+
+            <!-- Imagen -->
+            <div class="aspect-square overflow-hidden bg-gray-100">
+              <img
+                src={moto.foto}
+                alt={moto.nombre}
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <!-- Info -->
+            <div class="p-3 flex flex-col flex-1">
+              <span class="text-[10px] font-semibold uppercase tracking-wide mb-1" style="color: var(--color-primary)">{moto.uso}</span>
+              <h2 class="text-sm font-bold text-gray-900 mb-1 leading-tight">{moto.nombre}</h2>
+              <p class="text-base font-extrabold mb-3" style="color: var(--color-secondary)">{moto.precio}</p>
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-auto inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-white text-xs font-bold uppercase tracking-wide"
+                style="background-color: var(--color-primary);"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-3.5 h-3.5">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.389a.75.75 0 0 0 .906.981l5.747-1.507A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.677-.514-5.2-1.408l-.373-.22-3.865 1.013 1.032-3.76-.242-.387A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+                </svg>
+                Cotizar
+              </a>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .active-filter {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+</style>
+
+<script>
+  const btns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.moto-card');
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      btns.forEach((b) => b.classList.remove('active-filter'));
+      btn.classList.add('active-filter');
+
+      const filter = btn.getAttribute('data-filter');
+      cards.forEach((card) => {
+        card.style.display = (filter === 'Todas' || card.dataset.categoria === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>

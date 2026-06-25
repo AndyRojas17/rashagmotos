@@ -9,7 +9,7 @@ const motos = defineCollection({
     uso: z.enum(['Scooters', 'Urbanas', 'Deportivas', 'Todo Terreno', 'Touring', 'Cuatrimotos']),
     foto: z.string(),
     mensaje_wa: z.string(),
-    orden: z.number().min(1).max(6),
+    orden: z.number().min(1),
     activa: z.boolean().default(true),
   }),
 });
