@@ -2,7 +2,7 @@
 import { site, waLink } from '@config/site';
 
 const navLinks = [
-  { label: 'Inicio', href: '#top' },
+  { label: 'Inicio', href: '/' },
   { label: 'Motos', href: '/catalogo' },
   { label: 'Financiamiento', href: '#financiamiento' },
   { label: 'Taller y Postventa', href: '#taller' },
@@ -20,7 +20,7 @@ const waHref = waLink('Hola, me comunico desde su sitio web. Quisiera más infor
   <div class="px-6 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-[68px]">
 
     <!-- Logo -->
-    <a href="#top" class="flex items-center shrink-0" aria-label={`Inicio ${site.nombre}`}>
+    <a href="/" class="flex items-center shrink-0" aria-label={`Inicio ${site.nombre}`}>
       <img src={site.logo} alt={site.logo_alt} class="h-9 md:h-10 w-auto" />
     </a>
 
