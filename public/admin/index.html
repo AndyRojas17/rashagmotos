@@ -12,47 +12,32 @@
       const match = hash.match(/github-token=([^&]+)/);
 
       if (match) {
-        // This is the popup window returning with a token
-        // Create hidden iframe pointing to worker — it will postMessage with the correct origin
+        // POPUP: recibimos token en el hash, lo enviamos a la ventana principal via BroadcastChannel
         const token = decodeURIComponent(match[1]);
         document.body.innerHTML = '<p style="font-family:sans-serif;text-align:center;margin-top:40px">✅ Autenticando...</p>';
 
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = 'https://rashagmotos-oauth.dugo817.workers.dev/forward?token=' + encodeURIComponent(token);
-        document.body.appendChild(iframe);
+        const bc = new BroadcastChannel('decap-auth');
+        bc.postMessage({ token: token, provider: 'github' });
+        bc.close();
 
-        // Also try postMessage directly to opener if available
-        iframe.onload = function() {
-          setTimeout(() => {
-            if (window.opener) {
-              // Tell opener to load the iframe bridge too
-              window.opener.postMessage({ type: 'decap-auth-iframe', token: token }, 'https://rashagmotos.com');
-            }
-            window.close();
-          }, 1500);
-        };
-        return;
+        setTimeout(() => window.close(), 1500);
+        return; // No cargar Decap CMS en el popup
       }
 
-      // Main window: listen for auth from iframe bridge
-      window.addEventListener('message', function(e) {
-        if (e.origin === 'https://rashagmotos-oauth.dugo817.workers.dev') {
-          // Forward to Decap CMS (already a valid origin for Decap)
-          return; // Decap already listens to this
-        }
-        // From popup redirect on same origin
-        if (e.origin === 'https://rashagmotos.com' && e.data && e.data.type === 'decap-auth-iframe') {
-          const token = e.data.token;
-          // Create iframe here in main window so Decap CMS receives the message
+      // VENTANA PRINCIPAL: escucha el token del popup via BroadcastChannel
+      const bc = new BroadcastChannel('decap-auth');
+      bc.onmessage = function(e) {
+        if (e.data && e.data.token) {
+          bc.close();
+          // Crear iframe desde el worker origin para que Decap CMS acepte el postMessage
           const iframe = document.createElement('iframe');
-          iframe.style.display = 'none';
-          iframe.src = 'https://rashagmotos-oauth.dugo817.workers.dev/forward?token=' + encodeURIComponent(token);
+          iframe.style.cssText = 'display:none;position:absolute;width:0;height:0';
+          iframe.src = 'https://rashagmotos-oauth.dugo817.workers.dev/forward?token=' + encodeURIComponent(e.data.token);
           document.body.appendChild(iframe);
         }
-      });
+      };
 
-      // Load Decap CMS
+      // Cargar Decap CMS
       var s = document.createElement('script');
       s.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
       document.body.appendChild(s);
