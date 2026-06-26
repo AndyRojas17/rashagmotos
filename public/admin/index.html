@@ -546,12 +546,15 @@ async function saveForm(tab, path, sha) {
   }
 }
 
-async function delItem(path, sha) {
+async function delItem(path) {
   if (!confirm('¿Borrar este registro?')) return;
+  // Siempre obtener el SHA actual antes de borrar
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers: authHeaders() });
+  if (!res.ok) { alert('No se encontró el archivo. Recarga la página.'); return; }
+  const { sha } = await res.json();
   const ok = await deleteFile(path, sha);
-  if (!ok) { alert('Error al borrar. Recarga y vuelve a intentarlo.'); return; }
+  if (!ok) { alert('Error al borrar. Intenta de nuevo.'); return; }
   fileCache = {};
-  // pequeña espera para que GitHub refleje el cambio
   await new Promise(r => setTimeout(r, 1200));
   await loadTab(currentTab);
 }
