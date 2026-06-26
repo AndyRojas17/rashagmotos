@@ -1,11 +1,435 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rashag Motos — Admin</title>
+  <title>Admin — Rashag Motos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #111; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+    header h1 { font-size: 1rem; font-weight: 600; flex: 1; }
+    header button { background: #444; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: .85rem; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+
+    /* Login */
+    #login { max-width: 440px; margin: 80px auto; background: #fff; border-radius: 12px; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    #login h2 { font-size: 1.3rem; margin-bottom: 8px; }
+    #login p { color: #555; font-size: .9rem; margin-bottom: 24px; line-height: 1.5; }
+    #login a { color: #0969da; }
+    #login input { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; font-size: .95rem; margin-bottom: 12px; }
+    #login button { width: 100%; background: #111; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 1rem; cursor: pointer; }
+    #login button:hover { background: #333; }
+    #login .err { color: #c00; font-size: .85rem; margin-top: 8px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .tab { padding: 8px 20px; border-radius: 8px; border: none; background: #e0e0e0; cursor: pointer; font-size: .9rem; font-weight: 500; }
+    .tab.active { background: #111; color: #fff; }
+
+    /* List */
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .item { background: #fff; border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .item img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; background: #eee; }
+    .item-info { flex: 1; }
+    .item-info strong { display: block; font-size: .95rem; }
+    .item-info span { color: #666; font-size: .83rem; }
+    .item-actions { display: flex; gap: 8px; }
+    .btn { padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: .83rem; font-weight: 500; }
+    .btn-edit { background: #e8f0fe; color: #1a56db; }
+    .btn-del { background: #fde8e8; color: #c00; }
+    .btn-add { background: #111; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: .9rem; margin-bottom: 20px; }
+
+    /* Modal */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: center; justify-content: center; }
+    .overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 14px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+    .modal h3 { font-size: 1.1rem; margin-bottom: 20px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: .83rem; font-weight: 600; color: #444; margin-bottom: 5px; }
+    .field input, .field select, .field textarea { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 9px 12px; font-size: .9rem; }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field-row { display: flex; gap: 10px; }
+    .field-row .field { flex: 1; }
+    .toggle { display: flex; align-items: center; gap: 10px; }
+    .toggle input { width: auto; }
+    .modal-footer { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+    .btn-save { background: #111; color: #fff; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+    .btn-cancel { background: #eee; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; }
+    .img-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 8px; display: none; }
+    .status { font-size: .82rem; color: #555; margin-top: 6px; }
+    .spinner { text-align: center; padding: 40px; color: #888; }
+    .badge-off { background: #fde8e8; color: #c00; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
+    .badge-on { background: #e6f9f0; color: #076a3c; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+
+<!-- LOGIN -->
+<div id="login" style="display:none">
+  <h2>Rashag Motos — Admin</h2>
+  <p>Ingresa tu <a href="https://github.com/settings/tokens/new?scopes=repo&description=Rashag+Admin" target="_blank">GitHub Personal Access Token</a> con permiso <strong>repo</strong>.</p>
+  <input type="password" id="pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+  <button onclick="doLogin()">Entrar</button>
+  <div class="err" id="login-err"></div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <header>
+    <h1>Rashag Motos — Admin</h1>
+    <span id="user-name" style="font-size:.85rem;opacity:.7"></span>
+    <button onclick="doLogout()">Salir</button>
+  </header>
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('motos',this)">Motos</button>
+      <button class="tab" onclick="switchTab('galeria',this)">Galería</button>
+      <button class="tab" onclick="switchTab('clientes',this)">Comunidad</button>
+    </div>
+    <div id="content"><div class="spinner">Cargando...</div></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script>
+const REPO = 'AndyRojas17/rashagmotos';
+const BRANCH = 'main';
+const API = 'https://api.github.com';
+
+let token = '';
+let currentTab = 'motos';
+let fileCache = {};
+
+// ─── Auth ───────────────────────────────────────────────────────────
+function init() {
+  token = localStorage.getItem('rashag_pat') || '';
+  if (token) startApp();
+  else showLogin();
+}
+
+function showLogin() {
+  document.getElementById('login').style.display = 'block';
+}
+
+async function doLogin() {
+  const val = document.getElementById('pat').value.trim();
+  if (!val) return;
+  const res = await fetch(`${API}/user`, { headers: authHeaders(val) });
+  if (!res.ok) { document.getElementById('login-err').textContent = 'Token inválido. Verifica el permiso repo.'; return; }
+  const user = await res.json();
+  token = val;
+  localStorage.setItem('rashag_pat', token);
+  localStorage.setItem('rashag_user', user.login);
+  startApp();
+}
+
+function doLogout() {
+  localStorage.removeItem('rashag_pat');
+  location.reload();
+}
+
+function startApp() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const u = localStorage.getItem('rashag_user');
+  if (u) document.getElementById('user-name').textContent = '@' + u;
+  loadTab('motos');
+}
+
+function authHeaders(t) {
+  return { Authorization: `token ${t || token}`, Accept: 'application/vnd.github+json' };
+}
+
+// ─── GitHub File API ────────────────────────────────────────────────
+async function getFiles(folder) {
+  const res = await fetch(`${API}/repos/${REPO}/contents/${folder}?ref=${BRANCH}`, { headers: authHeaders() });
+  if (!res.ok) return [];
+  const list = await res.json();
+  return list.filter(f => f.name.endsWith('.md'));
+}
+
+async function readFile(path) {
+  if (fileCache[path]) return fileCache[path];
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers: authHeaders() });
+  const data = await res.json();
+  fileCache[path] = data;
+  return data;
+}
+
+async function writeFile(path, content, sha) {
+  delete fileCache[path];
+  const body = { message: sha ? `update ${path}` : `add ${path}`, content: btoa(unescape(encodeURIComponent(content))), branch: BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: 'PUT', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+  });
+  return res.ok;
+}
+
+async function deleteFile(path, sha) {
+  delete fileCache[path];
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: 'DELETE',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `delete ${path}`, sha, branch: BRANCH })
+  });
+  return res.ok;
+}
+
+// Upload image: write to public/images/xxx
+async function uploadImage(folder, filename, dataUrl) {
+  const base64 = dataUrl.split(',')[1];
+  const path = `public/images/${folder}/${filename}`;
+  delete fileCache[path];
+  // Check if exists to get SHA
+  let sha;
+  try {
+    const ex = await fetch(`${API}/repos/${REPO}/contents/${path}`, { headers: authHeaders() });
+    if (ex.ok) sha = (await ex.json()).sha;
+  } catch(_) {}
+  const body = { message: `upload image ${filename}`, content: base64, branch: BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: 'PUT', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+  });
+  return res.ok ? `/images/${folder}/${filename}` : null;
+}
+
+// ─── Frontmatter parser ─────────────────────────────────────────────
+function parseFM(raw) {
+  const m = raw.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) return {};
+  const obj = {};
+  m[1].split('\n').forEach(line => {
+    const i = line.indexOf(':');
+    if (i < 0) return;
+    const k = line.slice(0, i).trim();
+    let v = line.slice(i + 1).trim();
+    if (v === 'true') v = true;
+    else if (v === 'false') v = false;
+    else if (!isNaN(v) && v !== '') v = Number(v);
+    else v = v.replace(/^["']|["']$/g, '');
+    obj[k] = v;
+  });
+  return obj;
+}
+
+function buildFM(fields, body) {
+  const lines = Object.entries(fields).map(([k, v]) => {
+    if (typeof v === 'string' && (v.includes(':') || v.includes('#'))) return `${k}: "${v}"`;
+    return `${k}: ${v}`;
+  });
+  return `---\n${lines.join('\n')}\n---\n${body || ''}`;
+}
+
+function slug(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
+// ─── Tabs ───────────────────────────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  loadTab(tab);
+}
+
+async function loadTab(tab) {
+  currentTab = tab;
+  document.getElementById('content').innerHTML = '<div class="spinner">Cargando...</div>';
+  const folderMap = { motos: 'src/content/motos', galeria: 'src/content/galeria', clientes: 'src/content/clientes' };
+  const files = await getFiles(folderMap[tab]);
+  const items = [];
+  for (const f of files) {
+    const data = await readFile(f.path);
+    const raw = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+    items.push({ path: f.path, sha: data.sha, fm: parseFM(raw) });
+  }
+  items.sort((a, b) => (a.fm.orden || 99) - (b.fm.orden || 99));
+  renderList(tab, items);
+}
+
+// ─── Render lists ───────────────────────────────────────────────────
+function renderList(tab, items) {
+  const c = document.getElementById('content');
+  let html = `<button class="btn-add" onclick="openNew('${tab}')">+ Agregar</button><div class="list">`;
+  if (!items.length) html += '<p style="color:#888;padding:20px 0">Sin registros aún.</p>';
+  for (const it of items) {
+    const fm = it.fm;
+    const img = fm.foto ? `<img src="${fm.foto}" onerror="this.style.display='none'" />` : `<div style="width:56px;height:56px;background:#eee;border-radius:6px"></div>`;
+    let info = '';
+    if (tab === 'motos') info = `<strong>${fm.nombre || '—'}</strong><span>${fm.precio || ''} · ${fm.cilindrada || ''} · ${fm.uso || ''}</span>`;
+    if (tab === 'galeria') info = `<strong>${fm.alt || '—'}</strong><span>Orden: ${fm.orden || ''}</span>`;
+    if (tab === 'clientes') info = `<strong>${fm.modelo_moto || '—'}</strong><span>${fm.ciudad || ''}</span>`;
+    const badge = tab === 'motos' ? `<span class="${fm.activa !== false ? 'badge-on' : 'badge-off'}">${fm.activa !== false ? 'Activa' : 'Inactiva'}</span>` : '';
+    html += `<div class="item">${img}<div class="item-info">${info}${badge}</div><div class="item-actions"><button class="btn btn-edit" onclick='openEdit(${JSON.stringify(it)})'>Editar</button><button class="btn btn-del" onclick="delItem('${it.path}','${it.sha}')">Borrar</button></div></div>`;
+  }
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+// ─── Modal helpers ───────────────────────────────────────────────────
+function openModal(html) {
+  document.getElementById('modal-inner').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ─── New / Edit ──────────────────────────────────────────────────────
+function openNew(tab) { openForm(tab, null, null, {}); }
+function openEdit(item) { openForm(currentTab, item.path, item.sha, item.fm); }
+
+function openForm(tab, path, sha, fm) {
+  const isNew = !path;
+  const title = isNew ? 'Nuevo registro' : 'Editar';
+  let fields = '';
+
+  if (tab === 'motos') {
+    fields = `
+      <div class="field"><label>Nombre *</label><input id="f-nombre" value="${fm.nombre||''}" /></div>
+      <div class="field-row">
+        <div class="field"><label>Precio</label><input id="f-precio" value="${fm.precio||''}" placeholder="S/ 6,100" /></div>
+        <div class="field"><label>Cilindrada</label><input id="f-cilindrada" value="${fm.cilindrada||''}" placeholder="250cc" /></div>
+      </div>
+      <div class="field"><label>Categoría</label>
+        <select id="f-uso">
+          ${['Scooters','Urbanas','Deportivas','Todo Terreno','Touring','Cuatrimotos'].map(o=>`<option ${fm.uso===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Foto</label>
+        <img id="prev" class="img-preview" src="${fm.foto||''}" style="${fm.foto?'display:block':''}" />
+        <input type="file" id="f-foto-file" accept="image/*" onchange="previewImg(this)" />
+        <input type="hidden" id="f-foto" value="${fm.foto||''}" />
+        <div class="status" id="upload-status"></div>
+      </div>
+      <div class="field"><label>Mensaje WhatsApp</label><textarea id="f-mensaje_wa">${fm.mensaje_wa||''}</textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Orden</label><input id="f-orden" type="number" value="${fm.orden||10}" /></div>
+      </div>
+      <div class="field toggle"><input type="checkbox" id="f-activa" ${fm.activa!==false?'checked':''} /><label for="f-activa">Visible en web</label></div>`;
+  } else if (tab === 'galeria') {
+    fields = `
+      <div class="field"><label>Descripción *</label><input id="f-alt" value="${fm.alt||''}" /></div>
+      <div class="field"><label>Foto</label>
+        <img id="prev" class="img-preview" src="${fm.foto||''}" style="${fm.foto?'display:block':''}" />
+        <input type="file" id="f-foto-file" accept="image/*" onchange="previewImg(this)" />
+        <input type="hidden" id="f-foto" value="${fm.foto||''}" />
+        <div class="status" id="upload-status"></div>
+      </div>
+      <div class="field"><label>Orden</label><input id="f-orden" type="number" value="${fm.orden||10}" /></div>`;
+  } else {
+    fields = `
+      <div class="field"><label>Foto</label>
+        <img id="prev" class="img-preview" src="${fm.foto||''}" style="${fm.foto?'display:block':''}" />
+        <input type="file" id="f-foto-file" accept="image/*" onchange="previewImg(this)" />
+        <input type="hidden" id="f-foto" value="${fm.foto||''}" />
+        <div class="status" id="upload-status"></div>
+      </div>
+      <div class="field"><label>Modelo de moto *</label><input id="f-modelo_moto" value="${fm.modelo_moto||''}" /></div>
+      <div class="field"><label>Ciudad</label><input id="f-ciudad" value="${fm.ciudad||''}" /></div>
+      <div class="field"><label>Orden</label><input id="f-orden" type="number" value="${fm.orden||10}" /></div>`;
+  }
+
+  openModal(`
+    <h3>${title}</h3>
+    ${fields}
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveForm('${tab}','${path||''}','${sha||''}')">Guardar</button>
+    </div>`);
+}
+
+function previewImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('prev');
+    prev.src = e.target.result;
+    prev.style.display = 'block';
+    prev.dataset.dataurl = e.target.result;
+    prev.dataset.filename = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveForm(tab, path, sha) {
+  const btn = document.querySelector('.btn-save');
+  btn.textContent = 'Guardando...';
+  btn.disabled = true;
+
+  // Upload image if changed
+  const prev = document.getElementById('prev');
+  if (prev && prev.dataset.dataurl) {
+    document.getElementById('upload-status').textContent = 'Subiendo imagen...';
+    const folderImg = { motos: 'motos', galeria: 'galeria', clientes: 'clientes' }[tab];
+    const fn = Date.now() + '_' + (prev.dataset.filename || 'img.jpg');
+    const url = await uploadImage(folderImg, fn, prev.dataset.dataurl);
+    if (url) document.getElementById('f-foto').value = url;
+    document.getElementById('upload-status').textContent = '';
+  }
+
+  // Build frontmatter
+  let fm = {};
+  const folderMap = { motos: 'src/content/motos', galeria: 'src/content/galeria', clientes: 'src/content/clientes' };
+
+  if (tab === 'motos') {
+    fm = {
+      nombre: document.getElementById('f-nombre').value.trim(),
+      precio: document.getElementById('f-precio').value.trim(),
+      cilindrada: document.getElementById('f-cilindrada').value.trim(),
+      uso: document.getElementById('f-uso').value,
+      foto: document.getElementById('f-foto').value,
+      mensaje_wa: document.getElementById('f-mensaje_wa').value.trim(),
+      orden: parseInt(document.getElementById('f-orden').value) || 10,
+      activa: document.getElementById('f-activa').checked,
+    };
+    if (!fm.nombre) { alert('El nombre es requerido'); btn.textContent='Guardar'; btn.disabled=false; return; }
+  } else if (tab === 'galeria') {
+    fm = {
+      alt: document.getElementById('f-alt').value.trim(),
+      foto: document.getElementById('f-foto').value,
+      orden: parseInt(document.getElementById('f-orden').value) || 10,
+    };
+    if (!fm.alt) { alert('La descripción es requerida'); btn.textContent='Guardar'; btn.disabled=false; return; }
+  } else {
+    fm = {
+      foto: document.getElementById('f-foto').value,
+      modelo_moto: document.getElementById('f-modelo_moto').value.trim(),
+      ciudad: document.getElementById('f-ciudad').value.trim(),
+      orden: parseInt(document.getElementById('f-orden').value) || 10,
+    };
+    if (!fm.modelo_moto) { alert('El modelo es requerido'); btn.textContent='Guardar'; btn.disabled=false; return; }
+  }
+
+  const content = buildFM(fm);
+  const filePath = path || `${folderMap[tab]}/${slug(fm.nombre || fm.alt || fm.modelo_moto || Date.now())}.md`;
+
+  const ok = await writeFile(filePath, content, sha || null);
+  if (ok) {
+    closeModal();
+    await loadTab(tab);
+  } else {
+    alert('Error al guardar. Verifica el token.');
+    btn.textContent = 'Guardar';
+    btn.disabled = false;
+  }
+}
+
+async function delItem(path, sha) {
+  if (!confirm('¿Borrar este registro?')) return;
+  await deleteFile(path, sha);
+  await loadTab(currentTab);
+}
+
+// ─── Boot ────────────────────────────────────────────────────────────
+init();
+</script>
 </body>
 </html>
