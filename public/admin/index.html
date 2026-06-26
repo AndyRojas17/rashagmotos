@@ -6,6 +6,48 @@
   <title>Rashag Motos — Admin</title>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // Bridge: popup receives token in hash → writes to localStorage → parent window picks it up
+    (function() {
+      const hash = window.location.hash;
+      const match = hash.match(/github-token=([^&]+)/);
+      if (match) {
+        const token = decodeURIComponent(match[1]);
+        // Write to localStorage so parent window (same origin) receives storage event
+        localStorage.setItem('decap-auth-token', JSON.stringify({
+          token: token,
+          provider: 'github',
+          ts: Date.now()
+        }));
+        localStorage.removeItem('decap-auth-token'); // trigger storage event in parent
+        // Close this popup after a moment
+        document.body.innerHTML = '<p style="font-family:sans-serif;text-align:center;margin-top:40px">✅ Autenticando...</p>';
+        setTimeout(() => window.close(), 1500);
+        return; // Don't load CMS in popup
+      }
+
+      // Parent window: listen for auth token from popup via storage event
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'decap-auth-token' && e.oldValue !== null && e.newValue === null) {
+          // The popup removed the item — read the old value
+          try {
+            const data = JSON.parse(e.oldValue);
+            if (data.token && data.provider === 'github') {
+              const msg = 'authorization:github:success:' + JSON.stringify({
+                token: data.token,
+                provider: 'github'
+              });
+              window.postMessage(msg, window.location.origin);
+            }
+          } catch(err) {}
+        }
+      });
+
+      // Load Decap CMS only in the main window
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+      document.body.appendChild(s);
+    })();
+  </script>
 </body>
 </html>
