@@ -146,70 +146,70 @@ declare module 'astro:content' {
   slug: "cliente-01";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-02.md": {
 	id: "cliente-02.md";
   slug: "cliente-02";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-03.md": {
 	id: "cliente-03.md";
   slug: "cliente-03";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-04.md": {
 	id: "cliente-04.md";
   slug: "cliente-04";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-05.md": {
 	id: "cliente-05.md";
   slug: "cliente-05";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-06.md": {
 	id: "cliente-06.md";
   slug: "cliente-06";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-07.md": {
 	id: "cliente-07.md";
   slug: "cliente-07";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-08.md": {
 	id: "cliente-08.md";
   slug: "cliente-08";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-09.md": {
 	id: "cliente-09.md";
   slug: "cliente-09";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 "cliente-10.md": {
 	id: "cliente-10.md";
   slug: "cliente-10";
   body: string;
   collection: "clientes";
-  data: InferEntrySchema<"clientes">
+  data: any
 } & { render(): Render[".md"] };
 };
 "financiamiento": {
@@ -218,7 +218,7 @@ declare module 'astro:content' {
   slug: "index";
   body: string;
   collection: "financiamiento";
-  data: InferEntrySchema<"financiamiento">
+  data: any
 } & { render(): Render[".md"] };
 };
 "galeria": {
@@ -227,42 +227,42 @@ declare module 'astro:content' {
   slug: "foto-01";
   body: string;
   collection: "galeria";
-  data: InferEntrySchema<"galeria">
+  data: any
 } & { render(): Render[".md"] };
 "foto-02.md": {
 	id: "foto-02.md";
   slug: "foto-02";
   body: string;
   collection: "galeria";
-  data: InferEntrySchema<"galeria">
+  data: any
 } & { render(): Render[".md"] };
 "foto-03.md": {
 	id: "foto-03.md";
   slug: "foto-03";
   body: string;
   collection: "galeria";
-  data: InferEntrySchema<"galeria">
+  data: any
 } & { render(): Render[".md"] };
 "foto-04.md": {
 	id: "foto-04.md";
   slug: "foto-04";
   body: string;
   collection: "galeria";
-  data: InferEntrySchema<"galeria">
+  data: any
 } & { render(): Render[".md"] };
 "foto-05.md": {
 	id: "foto-05.md";
   slug: "foto-05";
   body: string;
   collection: "galeria";
-  data: InferEntrySchema<"galeria">
+  data: any
 } & { render(): Render[".md"] };
 "foto-06.md": {
 	id: "foto-06.md";
   slug: "foto-06";
   body: string;
   collection: "galeria";
-  data: InferEntrySchema<"galeria">
+  data: any
 } & { render(): Render[".md"] };
 };
 "local": {
@@ -271,7 +271,7 @@ declare module 'astro:content' {
   slug: "index";
   body: string;
   collection: "local";
-  data: InferEntrySchema<"local">
+  data: any
 } & { render(): Render[".md"] };
 };
 "marcas": {
@@ -280,42 +280,42 @@ declare module 'astro:content' {
   slug: "advance";
   body: string;
   collection: "marcas";
-  data: InferEntrySchema<"marcas">
+  data: any
 } & { render(): Render[".md"] };
 "hero.md": {
 	id: "hero.md";
   slug: "hero";
   body: string;
   collection: "marcas";
-  data: InferEntrySchema<"marcas">
+  data: any
 } & { render(): Render[".md"] };
 "katers.md": {
 	id: "katers.md";
   slug: "katers";
   body: string;
   collection: "marcas";
-  data: InferEntrySchema<"marcas">
+  data: any
 } & { render(): Render[".md"] };
 "motofox.md": {
 	id: "motofox.md";
   slug: "motofox";
   body: string;
   collection: "marcas";
-  data: InferEntrySchema<"marcas">
+  data: any
 } & { render(): Render[".md"] };
 "polux.md": {
 	id: "polux.md";
   slug: "polux";
   body: string;
   collection: "marcas";
-  data: InferEntrySchema<"marcas">
+  data: any
 } & { render(): Render[".md"] };
 "ssenda.md": {
 	id: "ssenda.md";
   slug: "ssenda";
   body: string;
   collection: "marcas";
-  data: InferEntrySchema<"marcas">
+  data: any
 } & { render(): Render[".md"] };
 };
 "motos": {
@@ -324,42 +324,49 @@ declare module 'astro:content' {
   slug: "moto-01";
   body: string;
   collection: "motos";
-  data: InferEntrySchema<"motos">
+  data: any
 } & { render(): Render[".md"] };
 "moto-02.md": {
 	id: "moto-02.md";
   slug: "moto-02";
   body: string;
   collection: "motos";
-  data: InferEntrySchema<"motos">
+  data: any
 } & { render(): Render[".md"] };
 "moto-03.md": {
 	id: "moto-03.md";
   slug: "moto-03";
   body: string;
   collection: "motos";
-  data: InferEntrySchema<"motos">
+  data: any
 } & { render(): Render[".md"] };
 "moto-04.md": {
 	id: "moto-04.md";
   slug: "moto-04";
   body: string;
   collection: "motos";
-  data: InferEntrySchema<"motos">
+  data: any
 } & { render(): Render[".md"] };
 "moto-05.md": {
 	id: "moto-05.md";
   slug: "moto-05";
   body: string;
   collection: "motos";
-  data: InferEntrySchema<"motos">
+  data: any
 } & { render(): Render[".md"] };
 "moto-06.md": {
 	id: "moto-06.md";
   slug: "moto-06";
   body: string;
   collection: "motos";
-  data: InferEntrySchema<"motos">
+  data: any
+} & { render(): Render[".md"] };
+"moto-07.md": {
+	id: "moto-07.md";
+  slug: "moto-07";
+  body: string;
+  collection: "motos";
+  data: any
 } & { render(): Render[".md"] };
 };
 
@@ -371,5 +378,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	export type ContentConfig = typeof import("./../../src/content/config.js");
+	export type ContentConfig = never;
 }
