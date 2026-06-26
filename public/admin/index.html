@@ -7,43 +7,52 @@
 </head>
 <body>
   <script>
-    // Bridge: popup receives token in hash → writes to localStorage → parent window picks it up
     (function() {
       const hash = window.location.hash;
       const match = hash.match(/github-token=([^&]+)/);
+
       if (match) {
+        // This is the popup window returning with a token
+        // Create hidden iframe pointing to worker — it will postMessage with the correct origin
         const token = decodeURIComponent(match[1]);
-        // Write to localStorage so parent window (same origin) receives storage event
-        localStorage.setItem('decap-auth-token', JSON.stringify({
-          token: token,
-          provider: 'github',
-          ts: Date.now()
-        }));
-        localStorage.removeItem('decap-auth-token'); // trigger storage event in parent
-        // Close this popup after a moment
         document.body.innerHTML = '<p style="font-family:sans-serif;text-align:center;margin-top:40px">✅ Autenticando...</p>';
-        setTimeout(() => window.close(), 1500);
-        return; // Don't load CMS in popup
+
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = 'https://rashagmotos-oauth.dugo817.workers.dev/forward?token=' + encodeURIComponent(token);
+        document.body.appendChild(iframe);
+
+        // Also try postMessage directly to opener if available
+        iframe.onload = function() {
+          setTimeout(() => {
+            if (window.opener) {
+              // Tell opener to load the iframe bridge too
+              window.opener.postMessage({ type: 'decap-auth-iframe', token: token }, 'https://rashagmotos.com');
+            }
+            window.close();
+          }, 1500);
+        };
+        return;
       }
 
-      // Parent window: listen for auth token from popup via storage event
-      window.addEventListener('storage', function(e) {
-        if (e.key === 'decap-auth-token' && e.oldValue !== null && e.newValue === null) {
-          // The popup removed the item — read the old value
-          try {
-            const data = JSON.parse(e.oldValue);
-            if (data.token && data.provider === 'github') {
-              const msg = 'authorization:github:success:' + JSON.stringify({
-                token: data.token,
-                provider: 'github'
-              });
-              window.postMessage(msg, window.location.origin);
-            }
-          } catch(err) {}
+      // Main window: listen for auth from iframe bridge
+      window.addEventListener('message', function(e) {
+        if (e.origin === 'https://rashagmotos-oauth.dugo817.workers.dev') {
+          // Forward to Decap CMS (already a valid origin for Decap)
+          return; // Decap already listens to this
+        }
+        // From popup redirect on same origin
+        if (e.origin === 'https://rashagmotos.com' && e.data && e.data.type === 'decap-auth-iframe') {
+          const token = e.data.token;
+          // Create iframe here in main window so Decap CMS receives the message
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = 'https://rashagmotos-oauth.dugo817.workers.dev/forward?token=' + encodeURIComponent(token);
+          document.body.appendChild(iframe);
         }
       });
 
-      // Load Decap CMS only in the main window
+      // Load Decap CMS
       var s = document.createElement('script');
       s.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
       document.body.appendChild(s);
