@@ -2,7 +2,7 @@ backend:
   name: github
   repo: AndyRojas17/rashagmotos
   branch: main
-  base_url: https://rashagmotos-oauth.workers.dev
+  base_url: https://rashagmotos-oauth.dugo817.workers.dev
   auth_endpoint: /auth
 
 media_folder: public/images/motos
