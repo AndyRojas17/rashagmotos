@@ -162,9 +162,9 @@ async function getFiles(folder) {
   return list.filter(f => f.name.endsWith('.md'));
 }
 
-async function readFile(path) {
-  if (fileCache[path]) return fileCache[path];
-  const res = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers: authHeaders() });
+async function readFile(path, noCache) {
+  if (!noCache && fileCache[path]) return fileCache[path];
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}&t=${Date.now()}`, { headers: authHeaders() });
   const data = await res.json();
   fileCache[path] = data;
   return data;
@@ -532,7 +532,11 @@ async function saveForm(tab, path, sha) {
 
 async function delItem(path, sha) {
   if (!confirm('¿Borrar este registro?')) return;
-  await deleteFile(path, sha);
+  const ok = await deleteFile(path, sha);
+  if (!ok) { alert('Error al borrar. Recarga y vuelve a intentarlo.'); return; }
+  fileCache = {};
+  // pequeña espera para que GitHub refleje el cambio
+  await new Promise(r => setTimeout(r, 1200));
   await loadTab(currentTab);
 }
 
