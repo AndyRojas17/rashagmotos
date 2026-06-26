@@ -402,7 +402,7 @@ function openForm(tab, path, sha, fm) {
       <div class="field"><label>Nombre *</label><input id="f-nombre" value="${fm.nombre||''}" /></div>
       <div class="field"><label>Marca</label><input id="f-marca" value="${fm.marca||''}" placeholder="Ej: Dake, Tekken, Fuego..." /></div>
       <div class="field-row">
-        <div class="field"><label>Precio</label><input id="f-precio" value="${fm.precio||''}" placeholder="S/ 6,100" /></div>
+        <div class="field"><label>Precio</label><input id="f-precio" value="${fm.precio||''}" placeholder="S/ 6,100" onblur="fmtPrecio(this)" /></div>
         <div class="field"><label>Cilindrada</label><input id="f-cilindrada" value="${fm.cilindrada||''}" placeholder="250cc" /></div>
       </div>
       <div class="field"><label>Categoría</label>
@@ -455,6 +455,16 @@ function openForm(tab, path, sha, fm) {
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-save" onclick="saveForm('${tab}','${path||''}','${sha||''}')">Guardar</button>
     </div>`);
+}
+
+function fmtPrecio(input) {
+  let v = input.value.trim();
+  if (!v) return;
+  // Si es solo número, agrega "S/ " y formatea con coma de miles
+  const num = v.replace(/[^0-9]/g, '');
+  if (num && (v === num || v.match(/^\d[\d,. ]*$/))) {
+    input.value = 'S/ ' + parseInt(num).toLocaleString('es-PE');
+  }
 }
 
 function previewImg(input) {
