@@ -1,0 +1,66 @@
+backend:
+  name: github
+  repo: AndyRojas17/rashagmotos
+  branch: main
+  base_url: https://rashagmotos-oauth.workers.dev
+  auth_endpoint: /auth
+
+media_folder: public/images/motos
+public_folder: /images/motos
+
+locale: es
+
+collections:
+  - name: motos
+    label: Motos
+    folder: src/content/motos
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: Nombre, name: nombre, widget: string }
+      - { label: Precio, name: precio, widget: string, hint: "Ej: S/ 6,100" }
+      - { label: Cilindrada, name: cilindrada, widget: string, hint: "Ej: 250cc" }
+      - label: Categoría
+        name: uso
+        widget: select
+        options:
+          - { label: Scooters, value: Scooters }
+          - { label: Urbanas, value: Urbanas }
+          - { label: Deportivas, value: Deportivas }
+          - { label: Todo Terreno, value: Todo Terreno }
+          - { label: Touring, value: Touring }
+          - { label: Cuatrimotos, value: Cuatrimotos }
+      - { label: Foto, name: foto, widget: image, hint: "Imagen cuadrada 800x800px" }
+      - { label: Mensaje WhatsApp, name: mensaje_wa, widget: text }
+      - { label: Orden, name: orden, widget: number, default: 10 }
+      - { label: Activa (visible en web), name: activa, widget: boolean, default: true }
+
+  - name: galeria
+    label: Galería
+    folder: src/content/galeria
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: Descripción, name: alt, widget: string }
+      - { label: Foto, name: foto, widget: image }
+      - { label: Orden, name: orden, widget: number, default: 10 }
+
+  - name: clientes
+    label: Comunidad Rashag (Clientes)
+    folder: src/content/clientes
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: Foto del cliente, name: foto, widget: image, hint: "Imagen cuadrada 1:1" }
+      - { label: Modelo de moto, name: modelo_moto, widget: string }
+      - { label: Ciudad, name: ciudad, widget: string, required: false }
+      - { label: Orden, name: orden, widget: number, default: 10 }
