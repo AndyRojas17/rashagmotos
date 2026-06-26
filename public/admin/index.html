@@ -61,6 +61,7 @@
     .spinner { text-align: center; padding: 40px; color: #888; }
     .badge-off { background: #fde8e8; color: #c00; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
     .badge-on { background: #e6f9f0; color: #076a3c; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
+    .badge-dest { background: #fff3cd; color: #7a4f00; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
   </style>
 </head>
 <body>
@@ -265,7 +266,7 @@ function renderList(tab, items) {
     if (tab === 'motos') info = `<strong>${fm.nombre || '—'}</strong><span>${fm.precio || ''} · ${fm.cilindrada || ''} · ${fm.uso || ''}</span>`;
     if (tab === 'galeria') info = `<strong>${fm.alt || '—'}</strong><span>Orden: ${fm.orden || ''}</span>`;
     if (tab === 'clientes') info = `<strong>${fm.modelo_moto || '—'}</strong><span>${fm.ciudad || ''}</span>`;
-    const badge = tab === 'motos' ? `<span class="${fm.activa !== false ? 'badge-on' : 'badge-off'}">${fm.activa !== false ? 'Activa' : 'Inactiva'}</span>` : '';
+    const badge = tab === 'motos' ? `<span class="${fm.activa !== false ? 'badge-on' : 'badge-off'}">${fm.activa !== false ? 'Activa' : 'Inactiva'}</span>${fm.destacada ? ' <span class="badge-dest">⭐ Destacada</span>' : ''}` : '';
     html += `<div class="item">${img}<div class="item-info">${info}${badge}</div><div class="item-actions"><button class="btn btn-edit" onclick='openEdit(${JSON.stringify(it)})'>Editar</button><button class="btn btn-del" onclick="delItem('${it.path}','${it.sha}')">Borrar</button></div></div>`;
   }
   html += '</div>';
@@ -312,7 +313,8 @@ function openForm(tab, path, sha, fm) {
       <div class="field-row">
         <div class="field"><label>Orden</label><input id="f-orden" type="number" value="${fm.orden||10}" /></div>
       </div>
-      <div class="field toggle"><input type="checkbox" id="f-activa" ${fm.activa!==false?'checked':''} /><label for="f-activa">Visible en web</label></div>`;
+      <div class="field toggle"><input type="checkbox" id="f-activa" ${fm.activa!==false?'checked':''} /><label for="f-activa">Visible en web</label></div>
+      <div class="field toggle"><input type="checkbox" id="f-destacada" ${fm.destacada?'checked':''} /><label for="f-destacada">⭐ Destacada (aparece en sección especial)</label></div>`;
   } else if (tab === 'galeria') {
     fields = `
       <div class="field"><label>Descripción *</label><input id="f-alt" value="${fm.alt||''}" /></div>
@@ -389,6 +391,7 @@ async function saveForm(tab, path, sha) {
       mensaje_wa: document.getElementById('f-mensaje_wa').value.trim(),
       orden: parseInt(document.getElementById('f-orden').value) || 10,
       activa: document.getElementById('f-activa').checked,
+      destacada: document.getElementById('f-destacada').checked,
     };
     if (!fm.nombre) { alert('El nombre es requerido'); btn.textContent='Guardar'; btn.disabled=false; return; }
   } else if (tab === 'galeria') {
