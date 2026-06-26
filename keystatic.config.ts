@@ -2,9 +2,7 @@ import { config, collection, singleton, fields } from '@keystatic/core';
 
 export default config({
   storage: {
-    kind: 'github',
-    repo: 'AndyRojas17/rashagmotos',
-    branchPrefix: 'cms/',
+    kind: 'local',
   },
 
   ui: {
