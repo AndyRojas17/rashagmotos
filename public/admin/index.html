@@ -394,6 +394,7 @@ function openForm(tab, path, sha, fm) {
   if (tab === 'motos') {
     fields = `
       <div class="field"><label>Nombre *</label><input id="f-nombre" value="${fm.nombre||''}" /></div>
+      <div class="field"><label>Marca</label><input id="f-marca" value="${fm.marca||''}" placeholder="Ej: Dake, Tekken, Fuego..." /></div>
       <div class="field-row">
         <div class="field"><label>Precio</label><input id="f-precio" value="${fm.precio||''}" placeholder="S/ 6,100" /></div>
         <div class="field"><label>Cilindrada</label><input id="f-cilindrada" value="${fm.cilindrada||''}" placeholder="250cc" /></div>
@@ -487,6 +488,7 @@ async function saveForm(tab, path, sha) {
   if (tab === 'motos') {
     fm = {
       nombre: document.getElementById('f-nombre').value.trim(),
+      marca: document.getElementById('f-marca').value.trim(),
       precio: document.getElementById('f-precio').value.trim(),
       cilindrada: document.getElementById('f-cilindrada').value.trim(),
       uso: document.getElementById('f-uso').value,
