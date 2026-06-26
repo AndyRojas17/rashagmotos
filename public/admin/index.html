@@ -231,7 +231,7 @@ function parseFM(raw) {
 
 function buildFM(fields, body) {
   const lines = Object.entries(fields).map(([k, v]) => {
-    if (typeof v === 'string' && (v.includes(':') || v.includes('#'))) return `${k}: "${v}"`;
+    if (typeof v === 'string') return `${k}: "${v.replace(/"/g, '\\"')}"`;
     return `${k}: ${v}`;
   });
   return `---\n${lines.join('\n')}\n---\n${body || ''}`;

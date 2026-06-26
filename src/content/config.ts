@@ -4,13 +4,15 @@ const motos = defineCollection({
   type: 'content',
   schema: z.object({
     nombre: z.string(),
+    marca: z.string().optional(),
     precio: z.string(),
     cilindrada: z.string(),
     uso: z.enum(['Scooters', 'Urbanas', 'Deportivas', 'Todo Terreno', 'Touring', 'Cuatrimotos']),
-    foto: z.string(),
-    mensaje_wa: z.string(),
-    orden: z.number().min(1),
+    foto: z.string().optional(),
+    mensaje_wa: z.string().optional(),
+    orden: z.number().min(1).default(10),
     activa: z.boolean().default(true),
+    destacada: z.boolean().default(false),
   }),
 });
 
