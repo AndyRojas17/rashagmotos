@@ -162,9 +162,10 @@ async function getFiles(folder) {
   return list.filter(f => f.name.endsWith('.md'));
 }
 
-async function readFile(path, noCache) {
-  if (!noCache && fileCache[path]) return fileCache[path];
-  const res = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}&t=${Date.now()}`, { headers: authHeaders() });
+async function readFile(path) {
+  if (fileCache[path]) return fileCache[path];
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}?ref=${BRANCH}`, { headers: authHeaders() });
+  if (!res.ok) return null;
   const data = await res.json();
   fileCache[path] = data;
   return data;
@@ -251,16 +252,21 @@ async function loadTab(tab) {
   currentTab = tab;
   document.getElementById('content').innerHTML = '<div class="spinner">Cargando...</div>';
   if (tab === 'banners') { loadBanners(); return; }
-  const folderMap = { motos: 'src/content/motos', galeria: 'src/content/galeria', clientes: 'src/content/clientes' };
-  const files = await getFiles(folderMap[tab]);
-  const items = [];
-  for (const f of files) {
-    const data = await readFile(f.path);
-    const raw = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
-    items.push({ path: f.path, sha: data.sha, fm: parseFM(raw) });
+  try {
+    const folderMap = { motos: 'src/content/motos', galeria: 'src/content/galeria', clientes: 'src/content/clientes' };
+    const files = await getFiles(folderMap[tab]);
+    const items = [];
+    for (const f of files) {
+      const data = await readFile(f.path);
+      if (!data || !data.content) continue;
+      const raw = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+      items.push({ path: f.path, sha: data.sha, fm: parseFM(raw) });
+    }
+    items.sort((a, b) => (a.fm.orden || 99) - (b.fm.orden || 99));
+    renderList(tab, items);
+  } catch(e) {
+    document.getElementById('content').innerHTML = `<p style="color:#c00;padding:20px 0">Error al cargar. <a href="#" onclick="loadTab('${tab}');return false">Reintentar</a></p>`;
   }
-  items.sort((a, b) => (a.fm.orden || 99) - (b.fm.orden || 99));
-  renderList(tab, items);
 }
 
 // ─── Banners ─────────────────────────────────────────────────────────
