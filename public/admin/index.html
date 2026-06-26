@@ -62,6 +62,13 @@
     .badge-off { background: #fde8e8; color: #c00; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
     .badge-on { background: #e6f9f0; color: #076a3c; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
     .badge-dest { background: #fff3cd; color: #7a4f00; padding: 2px 8px; border-radius: 99px; font-size: .75rem; }
+    .img-hint { font-size: .78rem; color: #666; margin-top: 6px; line-height: 1.5; background: #f0f4ff; border-radius: 6px; padding: 7px 10px; }
+    .banner-card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .banner-card h4 { font-size: .95rem; margin-bottom: 4px; }
+    .banner-card .sub { color: #666; font-size: .82rem; margin-bottom: 14px; }
+    .banner-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; display: none; }
+    .btn-upload { background: #111; color: #fff; padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: .88rem; margin-top: 8px; }
+    .btn-upload:disabled { opacity: .5; cursor: default; }
   </style>
 </head>
 <body>
@@ -87,6 +94,7 @@
       <button class="tab active" onclick="switchTab('motos',this)">Motos</button>
       <button class="tab" onclick="switchTab('galeria',this)">Galería</button>
       <button class="tab" onclick="switchTab('clientes',this)">Comunidad</button>
+      <button class="tab" onclick="switchTab('banners',this)">Banners</button>
     </div>
     <div id="content"><div class="spinner">Cargando...</div></div>
   </div>
@@ -242,6 +250,7 @@ function switchTab(tab, el) {
 async function loadTab(tab) {
   currentTab = tab;
   document.getElementById('content').innerHTML = '<div class="spinner">Cargando...</div>';
+  if (tab === 'banners') { loadBanners(); return; }
   const folderMap = { motos: 'src/content/motos', galeria: 'src/content/galeria', clientes: 'src/content/clientes' };
   const files = await getFiles(folderMap[tab]);
   const items = [];
@@ -252,6 +261,97 @@ async function loadTab(tab) {
   }
   items.sort((a, b) => (a.fm.orden || 99) - (b.fm.orden || 99));
   renderList(tab, items);
+}
+
+// ─── Banners ─────────────────────────────────────────────────────────
+const BANNERS = [
+  {
+    id: 'desktop',
+    label: 'Banner principal — Escritorio',
+    path: 'public/images/banners/banner-desktop.jpg',
+    hint: '📐 <strong>1920×600 px</strong> (o proporcional 16:5) · JPG recomendado · máx 500 KB<br>Imagen horizontal amplia. El texto de la web se superpone encima, evita poner texto en la imagen.',
+  },
+  {
+    id: 'mobile',
+    label: 'Banner principal — Celular',
+    path: 'public/images/banners/banner-mobile.jpg',
+    hint: '📐 <strong>768×500 px</strong> (o proporcional 3:2) · JPG recomendado · máx 300 KB<br>Versión recortada para pantallas angostas. Centra el motivo principal.',
+  },
+  {
+    id: 'destacadas',
+    label: 'Banner sección "Motos Destacadas"',
+    path: 'public/images/banners/banner-destacadas.jpg',
+    hint: '📐 <strong>1440×400 px</strong> (o proporcional 18:5) · JPG recomendado · máx 400 KB<br>Fondo de la sección de motos destacadas.',
+  },
+];
+
+async function loadBanners() {
+  let cards = '';
+  for (const b of BANNERS) {
+    let currentSrc = '';
+    try {
+      const res = await fetch(`${API}/repos/${REPO}/contents/${b.path}?ref=${BRANCH}`, { headers: authHeaders() });
+      if (res.ok) currentSrc = `/images/banners/banner-${b.id}.jpg?t=${Date.now()}`;
+    } catch(_) {}
+
+    cards += `
+      <div class="banner-card">
+        <h4>${b.label}</h4>
+        <div class="sub img-hint">${b.hint}</div>
+        <img id="bp-${b.id}" class="banner-preview" src="${currentSrc}" style="${currentSrc ? 'display:block' : ''}" />
+        <div>
+          <input type="file" id="bf-${b.id}" accept="image/*" onchange="previewBanner('${b.id}',this)" />
+          <div class="status" id="bs-${b.id}"></div>
+          <button class="btn-upload" id="bb-${b.id}" onclick="uploadBanner('${b.id}','${b.path}')" disabled>Subir banner</button>
+        </div>
+      </div>`;
+  }
+  document.getElementById('content').innerHTML = cards;
+}
+
+function previewBanner(id, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('bp-' + id);
+    img.src = e.target.result;
+    img.style.display = 'block';
+    img.dataset.dataurl = e.target.result;
+    img.dataset.filename = file.name;
+    document.getElementById('bb-' + id).disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadBanner(id, path) {
+  const img = document.getElementById('bp-' + id);
+  const btn = document.getElementById('bb-' + id);
+  const status = document.getElementById('bs-' + id);
+  if (!img.dataset.dataurl) return;
+  btn.disabled = true;
+  btn.textContent = 'Subiendo...';
+  status.textContent = '';
+  const base64 = img.dataset.dataurl.split(',')[1];
+  let sha;
+  try {
+    const ex = await fetch(`${API}/repos/${REPO}/contents/${path}`, { headers: authHeaders() });
+    if (ex.ok) sha = (await ex.json()).sha;
+  } catch(_) {}
+  const body = { message: `update banner-${id}`, content: base64, branch: BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    method: 'PUT', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  if (res.ok) {
+    status.textContent = '✅ Banner subido. Se verá en la web en 1-2 min.';
+    status.style.color = '#076a3c';
+  } else {
+    status.textContent = '❌ Error al subir. Intenta de nuevo.';
+    status.style.color = '#c00';
+  }
+  btn.textContent = 'Subir banner';
+  btn.disabled = false;
 }
 
 // ─── Render lists ───────────────────────────────────────────────────
@@ -308,6 +408,7 @@ function openForm(tab, path, sha, fm) {
         <input type="file" id="f-foto-file" accept="image/*" onchange="previewImg(this)" />
         <input type="hidden" id="f-foto" value="${fm.foto||''}" />
         <div class="status" id="upload-status"></div>
+        <div class="img-hint">📐 Cuadrada 1:1 — mínimo <strong>800×800 px</strong> · JPG o PNG · máx 2 MB<br>La moto debe estar centrada con fondo blanco o transparente.</div>
       </div>
       <div class="field"><label>Mensaje WhatsApp</label><textarea id="f-mensaje_wa">${fm.mensaje_wa||''}</textarea></div>
       <div class="field-row">
@@ -323,6 +424,7 @@ function openForm(tab, path, sha, fm) {
         <input type="file" id="f-foto-file" accept="image/*" onchange="previewImg(this)" />
         <input type="hidden" id="f-foto" value="${fm.foto||''}" />
         <div class="status" id="upload-status"></div>
+        <div class="img-hint">📐 Horizontal o cuadrada — mínimo <strong>1200×800 px</strong> · JPG o PNG · máx 3 MB<br>Foto de buena calidad, bien iluminada.</div>
       </div>
       <div class="field"><label>Orden</label><input id="f-orden" type="number" value="${fm.orden||10}" /></div>`;
   } else {
@@ -332,6 +434,7 @@ function openForm(tab, path, sha, fm) {
         <input type="file" id="f-foto-file" accept="image/*" onchange="previewImg(this)" />
         <input type="hidden" id="f-foto" value="${fm.foto||''}" />
         <div class="status" id="upload-status"></div>
+        <div class="img-hint">📐 Cuadrada 1:1 — mínimo <strong>600×600 px</strong> · JPG o PNG · máx 2 MB<br>Foto del cliente con su moto, recortada en cuadrado.</div>
       </div>
       <div class="field"><label>Modelo de moto *</label><input id="f-modelo_moto" value="${fm.modelo_moto||''}" /></div>
       <div class="field"><label>Ciudad</label><input id="f-ciudad" value="${fm.ciudad||''}" /></div>
