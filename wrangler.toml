@@ -3,5 +3,9 @@ main = "worker.js"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
+routes = [
+  { pattern = "www.rashagmotos.com/*", zone_name = "rashagmotos.com" }
+]
+
 [assets]
 directory = "./dist"
