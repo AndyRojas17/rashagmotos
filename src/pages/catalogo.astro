@@ -53,7 +53,8 @@ const categorias = ['Todas', ...Array.from(new Set(motos.map((m) => m.uso)))];
             <!-- Info -->
             <div class="p-3 flex flex-col flex-1">
               <span class="text-[10px] font-semibold uppercase tracking-wide mb-1" style="color: var(--color-primary)">{moto.uso}</span>
-              <h2 class="text-sm font-bold text-gray-900 mb-1 leading-tight">{moto.nombre}</h2>
+              <h2 class="text-sm font-bold text-gray-900 leading-tight">{moto.nombre}</h2>
+              {moto.marca && <p class="text-xs text-gray-400 mb-1">{moto.marca}</p>}
               <p class="text-base font-extrabold mb-3" style="color: var(--color-secondary)">{moto.precio}</p>
               <a
                 href={waHref}

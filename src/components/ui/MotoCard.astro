@@ -3,14 +3,15 @@ import { waLink } from '@config/site';
 
 interface Props {
   nombre: string;
+  marca?: string;
   precio: string;
   cilindrada: string;
-  uso: 'Trabajo' | 'Ciudad' | 'Campo' | 'Carga';
+  uso: string;
   foto: string;
   mensaje_wa: string;
 }
 
-const { nombre, precio, cilindrada, uso, foto, mensaje_wa } = Astro.props;
+const { nombre, marca, precio, cilindrada, uso, foto, mensaje_wa } = Astro.props;
 
 const usoIcons: Record<string, string> = {
   Trabajo: '🔧',
@@ -39,6 +40,7 @@ const href = waLink(mensaje_wa);
   <div class="flex flex-col flex-1 p-4 gap-3">
     <div>
       <h3 class="font-bold text-lg leading-tight" style="color: var(--color-secondary)">{nombre}</h3>
+      {marca && <p class="text-xs text-gray-400 mt-0.5">{marca}</p>}
       <p class="text-sm text-gray-500 mt-0.5">{cilindrada}</p>
     </div>
 

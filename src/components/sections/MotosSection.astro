@@ -3,9 +3,10 @@ import MotoCard from '@components/ui/MotoCard.astro';
 
 interface MotoData {
   nombre: string;
+  marca?: string;
   precio: string;
   cilindrada: string;
-  uso: 'Trabajo' | 'Ciudad' | 'Campo' | 'Carga';
+  uso: string;
   foto: string;
   mensaje_wa: string;
 }
@@ -27,6 +28,7 @@ const { motos } = Astro.props;
       {motos.map((moto) => (
         <MotoCard
           nombre={moto.nombre}
+          marca={moto.marca}
           precio={moto.precio}
           cilindrada={moto.cilindrada}
           uso={moto.uso}
