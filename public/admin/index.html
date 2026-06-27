@@ -401,7 +401,7 @@ function openForm(tab, path, sha, fm) {
 
   if (tab === 'motos') {
     fields = `
-      <div class="field"><label>Nombre *</label><input id="f-nombre" value="${fm.nombre||''}" /></div>
+      <div class="field"><label>Nombre *</label><input id="f-nombre" value="${fm.nombre||''}" oninput="autoWa(this,${!fm.mensaje_wa})" /></div>
       <div class="field"><label>Marca</label><input id="f-marca" value="${fm.marca||''}" placeholder="Ej: Dake, Tekken, Fuego..." /></div>
       <div class="field-row">
         <div class="field"><label>Precio</label><input id="f-precio" value="${fm.precio||''}" placeholder="S/ 6,100" onblur="fmtPrecio(this)" /></div>
@@ -466,6 +466,13 @@ function formatPrecioVal(v) {
     return 'S/ ' + parseInt(num).toLocaleString('es-PE');
   }
   return v;
+}
+
+function autoWa(input, isNew) {
+  if (!isNew) return;
+  const nombre = input.value.trim();
+  const wa = document.getElementById('f-mensaje_wa');
+  if (wa) wa.value = nombre ? `Hola! Quisiera información de la ${nombre}` : '';
 }
 
 function fmtPrecio(input) {
