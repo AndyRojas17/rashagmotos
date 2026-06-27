@@ -457,14 +457,17 @@ function openForm(tab, path, sha, fm) {
     </div>`);
 }
 
-function fmtPrecio(input) {
-  let v = input.value.trim();
-  if (!v) return;
-  // Si es solo número, agrega "S/ " y formatea con coma de miles
+function formatPrecioVal(v) {
+  if (!v) return v;
   const num = v.replace(/[^0-9]/g, '');
   if (num && (v === num || v.match(/^\d[\d,. ]*$/))) {
-    input.value = 'S/ ' + parseInt(num).toLocaleString('es-PE');
+    return 'S/ ' + parseInt(num).toLocaleString('es-PE');
   }
+  return v;
+}
+
+function fmtPrecio(input) {
+  input.value = formatPrecioVal(input.value.trim());
 }
 
 function previewImg(input) {
@@ -505,7 +508,7 @@ async function saveForm(tab, path, sha) {
     fm = {
       nombre: document.getElementById('f-nombre').value.trim(),
       marca: document.getElementById('f-marca').value.trim(),
-      precio: document.getElementById('f-precio').value.trim(),
+      precio: formatPrecioVal(document.getElementById('f-precio').value.trim()),
       cilindrada: document.getElementById('f-cilindrada').value.trim(),
       uso: document.getElementById('f-uso').value,
       foto: document.getElementById('f-foto').value,
