@@ -1,7 +1,7 @@
 ---
 nombre: "KTS 300 I"
 marca: "Katers"
-precio: "7390"
+precio: "S/ 7,390"
 cilindrada: "300cc"
 uso: "Touring"
 foto: "/images/motos/1782521347960_KTS 300 I.jpg"
