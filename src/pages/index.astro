@@ -20,7 +20,7 @@ const financiamiento = financiamientoEntry!.data;
 // --- Colecciones ordenadas ---
 const motosRaw = await getCollection('motos', ({ data }) => data.activa && data.destacada);
 const motos = motosRaw
-  .sort((a, b) => a.data.orden - b.data.orden)
+  .sort((a, b) => parseInt(a.data.cilindrada) - parseInt(b.data.cilindrada))
   .map((m) => m.data);
 
 const marcasRaw = await getCollection('marcas');

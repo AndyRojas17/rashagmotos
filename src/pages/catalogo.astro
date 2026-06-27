@@ -5,7 +5,7 @@ import { waLink } from '@config/site';
 
 const motosRaw = await getCollection('motos', ({ data }) => data.activa);
 const motos = motosRaw
-  .sort((a, b) => a.data.orden - b.data.orden)
+  .sort((a, b) => parseInt(a.data.cilindrada) - parseInt(b.data.cilindrada))
   .map((m) => m.data);
 
 const categorias = ['Todas', ...Array.from(new Set(motos.map((m) => m.uso)))];
