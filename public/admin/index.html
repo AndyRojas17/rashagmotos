@@ -367,7 +367,9 @@ function renderList(tab, items) {
   if (!items.length) html += '<p style="color:#888;padding:20px 0">Sin registros aún.</p>';
   for (const it of items) {
     const fm = it.fm;
-    const img = fm.foto ? `<img src="${fm.foto}" onerror="this.style.display='none'" />` : `<div style="width:56px;height:56px;background:#eee;border-radius:6px"></div>`;
+    const rawBase = `https://raw.githubusercontent.com/${REPO}/main/public`;
+    const imgSrc = fm.foto ? rawBase + fm.foto : '';
+    const img = imgSrc ? `<img src="${imgSrc}" onerror="this.style.display='none'" />` : `<div style="width:56px;height:56px;background:#eee;border-radius:6px"></div>`;
     let info = '';
     if (tab === 'motos') info = `<strong>${fm.nombre || '—'}</strong><span>${fm.precio || ''} · ${fm.cilindrada || ''} · ${fm.uso || ''}</span>`;
     if (tab === 'galeria') info = `<strong>${fm.alt || '—'}</strong><span>Orden: ${fm.orden || ''}</span>`;
